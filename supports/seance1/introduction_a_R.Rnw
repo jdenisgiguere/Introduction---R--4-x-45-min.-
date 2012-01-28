@@ -1,0 +1,86 @@
+\documentclass[letterpaper]{article}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[frenchb]{babel}
+
+\usepackage{geometry}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\lhead{}
+\chead{}
+\rhead{Premier pas dans R}
+\lfoot{Jean-Denis Giguère}
+\cfoot{CC-BY-SA}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+
+\title{Premier pas dans R \\ 
+{\small Introduction à l'utilisation du logiciel statistique R}}
+
+\author{Jean-Denis Giguère}
+
+
+\begin{document}
+
+
+\maketitle
+
+\thispagestyle{fancy}
+
+
+
+
+\section{Introduction}
+
+Bienvenue à cette première séance du cours d'introduction à l'utilisation du
+logiciel statistique R! Au cours des quatre prochaines semaines, les fonctionnalités
+de base de R seront explorés à raison de 45 minutes par séance hebdomadaire.
+
+À l'occasion, nous utiliserons des exemples exploitant des données géospatiales.
+Si vous êtes géomaticiennes, géomaticiens ou oeuvrez dans un domaine connexe,
+vous connaissez très bien l'importance de considérer la dimension spatiale
+lorsque l'on souhaite résoudre un problème. Si vous avez moins d'expérience avec
+l'analyse spatiale, sachez que 80\% des données possèdent une référence spatiale.
+Il s'agit donc d'une bonne opportunité pour explorer cette dimension.
+
+
+\subsection{Convention typographique}
+
+Dans ce document, le symbole {\tt >} sera utilisé pour indiquer l'invite
+de commande R. 
+
+<<>>=
+2 + 2
+@
+
+Les résultats numériques seront toujours présentés par un vecteur. Dans le cas ci-haut,
+celui-ci ne comporte qu'un élément. Le nombre en crochet représente l'index
+du premier élément à gauche. Cette notation devient plus utile très bientôt!
+
+Lorsqu'une commande sera très longue, le symbole {\tt $+$}  fera son appartion.
+Notez bien qu'il ne s'agit ne s'agit pas l'opérateur d'addition ici!
+
+<<>>=
+1 * 2 * 3 *
+4 * 5
+@
+
+\section{Mise en situation -- Comparaison de deux placettes-échantillons}
+
+Pour nos premiers pas dans R, nous utiliserons la situation suivante:
+
+Après une brève sortie terrain, vous revenez avec des mesures de diamètres
+pour deux placettes-échantillons. Vous inspectez visuellement votre carnet
+de notes et observez qu'il y a une similitude entre les diamètres observées
+pour les deux placettes-échantillons.
+
+Vous décidez donc d'utiliser R pour vérifier plus formelement cette hypothèse.
+
+
+
+
+\end{document}
