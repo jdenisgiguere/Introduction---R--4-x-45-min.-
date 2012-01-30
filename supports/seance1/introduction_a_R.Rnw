@@ -1,9 +1,15 @@
 \documentclass[letterpaper]{article}
 
+\usepackage{graphicx}
+
+\usepackage{verbatim}
+
 \usepackage[utf8x]{inputenc}
 \usepackage[frenchb]{babel}
 
-\usepackage{geometry}
+
+
+\usepackage[top=2.5cm,bottom=2.5cm,left=2cm,right=2cm]{geometry}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -12,7 +18,7 @@
 \chead{}
 \rhead{Premier pas dans R}
 \lfoot{Jean-Denis Giguère}
-\cfoot{CC-BY-SA}
+\cfoot{\includegraphics[height=1cm,keepaspectratio=true]{by-sa}}
 \rfoot{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
@@ -80,7 +86,143 @@ pour les deux placettes-échantillons.
 
 Vous décidez donc d'utiliser R pour vérifier plus formelement cette hypothèse.
 
+\section{{\tt RStudio}}
 
+Voici un petit intermède pour vous présenter notre environnement de travail.
+{\tt RStudio} est un environnement de développement intégré.
+C'est un logiciel qui vise à simplifier la vie en réunissant au même endroit
+plusieurs éléments qu'on utilise régulièrement lorsque l'on réalise des analyses
+statistiques.
+
+Dans le coin inférieur gauche, on retrouve la Console. 
+On peut utiliser cet espace pour transmettre des instructions à {\tt R}.
+
+Vous pouvez saisir ces premières instructions dans la console.
+
+<<>>=
+2 + 2
+sin(pi/2)
+@
+
+Au dessus de la Console, vous trouvez la section Éditeur.
+Cette section sera utilisé pour stocker et enregistrer 
+une suite d'instructions {\tt R} en prévision d'un usage futur.
+
+On peut se servir de l'éditeur comme simple bloc note, pour présenter l'ensemble
+des opérations requises pour un traitement donné et même pour faire
+la mise en page d'un rapport technique. 
+
+Les notes de cours que vous consultez présentement ont été rédigées dans
+l'éditeur de {\tt RStudio}.
+
+La section supérieure droite de {\tt RStudio} présente l'environnement de travail
+actuel. Vous pouvez y voir l'ensembles des variables qui sont actuellement
+définies dans votre environnement {\tt R}. Un onglet vous permet de voir
+l'historique des commandes réalisées.
+
+La section inférieure droite regroupe plusieurs éléments.
+Vous pouvez y visualiser l'arborescences des fichiers sur votre ordinateur,
+c'est à cet endroit que les graphiques s'afficheront, vous avez accès à la
+liste des packages disponibles sur votre système, vous pouvez également 
+consulter l'aide de {\tt R} à partir de cette section.
+
+\section{Saisir des données}
+
+Dans {\tt R}, on utilise des variables pour stocker des valeurs utiles
+à nos analyses. On utilise une flèche ($<-$) 
+composée du signe plus petit ($<$) et
+de l'opérateur de soustraction ($-$) pour affecter une valeur à une variable.
+
+<<>>=
+diametre.1 <- 0.54
+diametre.2 <- 1.02
+
+somme.diametre <- diametre.1 + diametre.2
+print(somme.diametre)
+@
+
+Dans l'environnement {\tt R}, on regroupera régulièrement plusieurs
+valeur au sein d'un vecteur. La fonction {\tt c()} est utilisée pour
+combiner des valeurs numériques au sein d'un vecteur.
+
+<<>>=
+diametre.placette.1 <- c(0.71, 0.74, 0.71, 0.90, 0.65, 0.72, 0.80, 0.74, 0.90,
+                         0.68, 0.79, 0.64)
+@
+
+Lorsque l'on veut saisir plusieurs valeurs manuellement, on peut utiliser
+la fonction {\tt scan()}.
+
+% Sweave ne supporte pas l'utilisation du scan, on affiche donc
+% direcement le résultat, puis on crée manuellement la variable
+\begin{Schunk}
+\begin{Sinput}
+scan()
+1: 0.99 0.66 0.62 0.82 0.82 0.75 0.78 0.76 0.82 0.88 0.66 0.60
+13:
+\end{Sinput}
+\begin{Soutput}
+Read 12 items
+ [1] 0.99 0.66 0.62 0.82 0.82 0.75 0.78 0.76 0.82 0.88 0.66 0.60
+\end{Soutput}
+\end{Schunk}
+
+<<echo=FALSE,results=hide>>= 
+diametre.placette.2 <- c(0.99, 0.66, 0.62, 0.82, 0.82, 0.75, 0.78, 0.76, 0.82,
+                         0.88, 0.66, 0.60)
+
+@
+
+
+% Fin de la partion de code pour contourner le scan
+
+\section{Créer un script}
+
+Si l'on souhaite pouvoir retourner `a une analyse statistique dans le futur,
+il faut stocker les opérations dans un fichier. On appelle couramment 
+{\it script} le fichier texte contenant la série d'instructions `a reproduire.
+
+En général, il est une bonne pratique de séparer la logique et les instructions
+qui en découlent des données. La majeure partie de la deuxi`eme séance
+sera consacrée aux stratégies pour importer et exporter des données 
+dans {\tt R}. Pour l'instant, nous stockerons les données dans le script.
+
+Par convention, on ajoutera l'extension {\tt .R} pour indiquer qu'un fichier
+est un script {\tt R}.
+
+\paragraph{Exercice} Créer un script dans lequel vous créez les variables
+\verb+diametre.placette.1+ et \verb+diametre.placette.2+ . 
+
+\section{Opérations arithmétiques}
+
+
+\section{Obtenir de l'aide!}
+
+\section{Valeurs manquantes}
+
+\section{Sélectionner et modifier un sous-ensemble de donnnées}
+
+\section{Tableau de données}
+
+\section{Stastiques descriptives}
+
+\section{Premier graphique}
+
+\section{Premier test statistique}
+
+\section{Conclusion}
+
+Voici un rappel des principaux éléments présentés lors de cette séance:
+\begin{itemize}
+\item la fonction \verb+c()+ permet de créer un vecteur;
+\item la fonction \verb+data.frame()+ permet de créer un tableau de données;
+\item {\tt R} utilise le principe de recyclage pour effectuer des opérations
+sur des vecteurs;
+\item en créant des scripts, on peut consulter ultérieurement une suite
+d'instruction.
+\end{itemize}
+
+\section{Exercices}
 
 
 \end{document}

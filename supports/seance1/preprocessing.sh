@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-wget http://i.creativecommons.org/l/by-sa/3.0/88x31.png -O cc-by-sa.png
+wget http://mirrors.creativecommons.org/presskit/buttons/88x31/eps/by-sa.eps
+epstopdf cc-by-sa.eps
