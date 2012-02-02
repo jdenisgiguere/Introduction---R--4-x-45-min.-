@@ -7,7 +7,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage[frenchb]{babel}
 
-
+\usepackage{array}
 
 \usepackage[top=2.5cm,bottom=2.5cm,left=2cm,right=2cm]{geometry}
 
@@ -32,6 +32,12 @@
 
 \begin{document}
 
+<<echo=FALSE,results=hide>>=
+#
+# Jean-Denis Giguère, 2012
+# CC-BY-SA
+#
+@
 
 \maketitle
 
@@ -81,16 +87,16 @@ Pour nos premiers pas dans R, nous utiliserons la situation suivante:
 
 Après une brève sortie terrain, vous revenez avec des mesures de diamètres
 pour deux placettes-échantillons. Vous inspectez visuellement votre carnet
-de notes et observez qu'il y a une similitude entre les diamètres observées
+de notes et observez qu'il y a une similitude entre les diamètres observés
 pour les deux placettes-échantillons.
 
-Vous décidez donc d'utiliser R pour vérifier plus formelement cette hypothèse.
+Vous décidez donc d'utiliser R pour vérifier plus formellement cette hypothèse.
 
 \section{{\tt RStudio}}
 
 Voici un petit intermède pour vous présenter notre environnement de travail.
 {\tt RStudio} est un environnement de développement intégré.
-C'est un logiciel qui vise à simplifier la vie en réunissant au même endroit
+C'est un logiciel qui vise à simplifier notre vie en réunissant au même endroit
 plusieurs éléments qu'on utilise régulièrement lorsque l'on réalise des analyses
 statistiques.
 
@@ -105,15 +111,16 @@ sin(pi/2)
 @
 
 Au dessus de la Console, vous trouvez la section Éditeur.
-Cette section sera utilisé pour stocker et enregistrer 
+Cette section sera utilisée pour stocker et enregistrer 
 une suite d'instructions {\tt R} en prévision d'un usage futur.
 
 On peut se servir de l'éditeur comme simple bloc note, pour présenter l'ensemble
 des opérations requises pour un traitement donné et même pour faire
 la mise en page d'un rapport technique. 
-
 Les notes de cours que vous consultez présentement ont été rédigées dans
-l'éditeur de {\tt RStudio}.
+l'éditeur de {\tt RStudio}. {\tt R} étant un environnement extensible,
+vous pourrez aussi développer vos propres fonctions et les intégrer à  {\tt R}.
+
 
 La section supérieure droite de {\tt RStudio} présente l'environnement de travail
 actuel. Vous pouvez y voir l'ensembles des variables qui sont actuellement
@@ -129,9 +136,9 @@ consulter l'aide de {\tt R} à partir de cette section.
 \section{Saisir des données}
 
 Dans {\tt R}, on utilise des variables pour stocker des valeurs utiles
-à nos analyses. On utilise une flèche ($<-$) 
-composée du signe plus petit ($<$) et
-de l'opérateur de soustraction ($-$) pour affecter une valeur à une variable.
+à nos analyses. On utilise une flèche \verb+<-+
+composée du signe plus petit \verb+<+ et
+de l'opérateur de soustraction \verb+-+ pour affecter une valeur à une variable.
 
 <<>>=
 diametre.1 <- 0.54
@@ -168,22 +175,24 @@ Read 12 items
 \end{Schunk}
 
 <<echo=FALSE,results=hide>>= 
+# La variable diametre.placette.2 est créé manuellement
+# avec la fonction scan() dans le PDF.
 diametre.placette.2 <- c(0.99, 0.66, 0.62, 0.82, 0.82, 0.75, 0.78, 0.76, 0.82,
                          0.88, 0.66, 0.60)
 
 @
 
-
 % Fin de la partion de code pour contourner le scan
+
 
 \section{Créer un script}
 
-Si l'on souhaite pouvoir retourner `a une analyse statistique dans le futur,
+Si l'on souhaite pouvoir retourner à une analyse statistique dans le futur,
 il faut stocker les opérations dans un fichier. On appelle couramment 
-{\it script} le fichier texte contenant la série d'instructions `a reproduire.
+{\it script} le fichier texte contenant la série d'instructions à reproduire.
 
 En général, il est une bonne pratique de séparer la logique et les instructions
-qui en découlent des données. La majeure partie de la deuxi`eme séance
+qui en découlent des données. La majeure partie de la deuxième séance
 sera consacrée aux stratégies pour importer et exporter des données 
 dans {\tt R}. Pour l'instant, nous stockerons les données dans le script.
 
@@ -195,34 +204,223 @@ est un script {\tt R}.
 
 \section{Opérations arithmétiques}
 
+Les opérations arithmétiques se font à l'aide des opérateurs
+usuels.
 
-\section{Obtenir de l'aide!}
+<<>>=
+0.5 * 12
+1.2 + 1.3
+23 / 0.333
+17 - 2.33
+2 ^ 8
+@
+
+Il est possible d'effectuer des opérations même lorsque les
+deux opérandes ne sont pas des vecteurs de même longueur.
+
+<<>>=
+diametre.placette.1 * 100
+diametre.placette.1 * c(0,1)
+@
+
+On appelle recyclage le principe selon lequel {\tt R} réutilise les
+valeurs du vecteur le plus court lorsqu'une opération doit être effectuée
+élément par élément. Pour que le recyclage fonctionne, il faut que
+la longueur du plus long vecteur soit un multiple de la longueur du plus
+petit vecteur.
+
+Les fonctions mathématiques couramment utilisées sont également
+disponibles. $\pi$ est également disponible via la variable \verb+pi+.
+
+<<>>=
+sin(3*pi / 2)
+cos(pi)
+exp(1.23)
+log10(1000)
+@
+
+\section{Premières statistiques descriptives}
+
+La fonction \verb+summary()+ permet d'obtenir un premier
+ensemble d'informations descriptives. Le résultat
+de cette fonction varie selon la nature de l'objet étudié.
+
+<<>>=
+summary(diametre.placette.1)
+summary(diametre.placette.2)
+@
+
+La moyenne et l'écart-type sont accessible avec les fonctions
+\verb+mean+ et \verb+sd+.
+
+<<>>=
+mean(diametre.placette.1)
+sd(diametre.placette.1)
+
+mean(diametre.placette.2)
+sd(diametre.placette.2)
+@
+
 
 \section{Valeurs manquantes}
 
+Il arrive à l'occasion qu'un jeu de données possède une ou plusieurs
+valeurs manquantes. La constante \verb+NA+ permet de l'indiquer.
+
+<<>>=
+diametre.placette.3 <- c(0.72, 0.82, NA, 0.75, NA, 0.73, 0.69)
+summary(diametre.placette.3)
+sd(diametre.placette.3)
+@
+
+\subsection{Obtenir de l'aide!}
+
+Comment calculer l'écart-type lorsqu'un vecteur contient des données
+manquantes? On peut utiliser la commande \verb+help+ ou son raccourci
+\verb+?+ pour obtenir plus d'information sur une fonction.
+
+\begin{Schunk}
+\begin{Sinput}
+help(sd)
+?mean
+\end{Sinput}
+\end{Schunk}
+
+On trouve que pour obtenir l'écart-type ou la moyenne d'un vecteur
+contenant des valeurs manquantes, on doit utiliser l'argument supplémentaire
+\verb+na.rm=TRUE+
+
+<<>>=
+sd(diametre.placette.3, na.rm=TRUE)
+mean(diametre.placette.3, na.rm=TRUE)
+@
+
 \section{Sélectionner et modifier un sous-ensemble de donnnées}
 
-\section{Tableau de données}
+Que faire pour accéder à une partie d'un vecteur?
+On utilise pour cela l'opérateur \verb+[]+.
 
-\section{Stastiques descriptives}
+<<>>=
+diametre.placette.1[1]
+diametre.placette.2[2:5]
+diametre.placette.2[c(1,4,6)]
+@
 
-\section{Premier graphique}
+On utiliser la même syntaxe pour remplacer une valeur dans un vecteur.
 
-\section{Premier test statistique}
+<<>>=
+diametre.placette.1[1] <- 0.71
+diametre.placette.2[c(1,4,6)] <- c(0.99, 0.82, 0.75)
+@
+
+
+\section{Premiers graphiques}
+
+Une analyse complète ne peut rarement être effectuée sans recours à la
+visualisation des données. {\tt R} offre à cet égard de nombreuses fonctionnalités.
+La troisième séance portera en bonne partie sur ces fonctionnalités.
+Commencons tout de même notre exploration dès aujourd'hui.
+
+Deux représentations graphiques intéressantes pour comparer nos 
+placettes-échantillons sont l'histogramme et la fameuse boîte à moustache.
+
+<<fig=TRUE, echo=TRUE>>=
+hist(diametre.placette.1)
+@
+
+<<fig=TRUE, echo=TRUE>>=
+boxplot(diametre.placette.1)
+@
+
+<<fig=TRUE, echo=TRUE>>=
+hist(diametre.placette.2)
+@
+
+<<fig=TRUE, echo=TRUE>>=
+boxplot(diametre.placette.2)
+@
+
+Si vous préférez avoir les quatres graphiques sur une même illustration:
+
+<<fig=TRUE, echo=TRUE>>=
+par(mfcol=c(2,2))
+hist(diametre.placette.1)
+boxplot(diametre.placette.1)
+hist(diametre.placette.2)
+boxplot(diametre.placette.2)
+@
+
+Les représentations graphiques permettent d'obtenir une nouvelle perspective
+sur les données. Ici, il faut faire attention car les échelles sont différentes!
+
+
+\section{Premiers tests statistiques}
+
+
+Pour vérifier si les diamètres moyens des deux placettes-échantillons
+sont différents, on peut utiliser le test de Student.
+Le test de Student repose sur l'hypothèse que la variance des deux échantillons
+est similaire. Le test de Fisher nous permettra de vérifier cette première 
+hypothèse.
+
+<<>>=
+var.test(diametre.placette.1, diametre.placette.2)
+@
+
+Ici, la {\it p-value} est de 0.3496. Il n'est donc pas possible de rejeter
+l'hypothèse nulle du test de Fisher selon laquelle la variance des deux
+échantillons est égale.
+
+Effectuons maintenant le test de Student.
+
+<<>>=
+t.test(diametre.placette.1,diametre.placette.2, var.equal=TRUE, paired=FALSE)
+@
+
+Ici, la {\it p-value} est trop élevée pour rejeter l'hypothèse nulle.
+Il n'est donc pas possible de prétendre que les diamètres moyens sont
+différents pour les deux placettes-échantillons.
 
 \section{Conclusion}
 
 Voici un rappel des principaux éléments présentés lors de cette séance:
 \begin{itemize}
 \item la fonction \verb+c()+ permet de créer un vecteur;
-\item la fonction \verb+data.frame()+ permet de créer un tableau de données;
+\item les opérateurs et fonctions mathématiques courants sont disponible
+  aisément dans {\tt R};
 \item {\tt R} utilise le principe de recyclage pour effectuer des opérations
 sur des vecteurs;
 \item en créant des scripts, on peut consulter ultérieurement une suite
-d'instruction.
+d'instruction;
+\item {\tt R} permet de visualiser des données et d'effectuer des tests statistiques.
 \end{itemize}
 
 \section{Exercices}
+Voici les précipitations moyennes en millimètres par mois pour Sherbrooke
+et Matane:
 
+\vspace{0.5cm}
+
+\begin{tabular}{|c|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+Mois & 01 & 02 & 03 & 04 & 05 & 06 & 07 & 08 & 09 & 10 & 11 & 12 \\
+\hline
+Sherbrooke & 72 & 55 & 68 & 75 & 94 & 98 & 113 & 120 & 92 & 87 & 82 & 83 \\
+\hline
+Matane  & 84 & 65 & 76 & 77 & 85 & 95 & 114 & 109 & 117 & 106 & 101 & 106 \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+En utilisation {\tt R}, répondez aux questions suivantes:
+\begin{enumerate}
+\item Quelle ville reçoit en moyenne le plus de précipitation annuellement?
+\item Combien de millimètres de précipitation sont reçues en moyenne mensuellement
+dans les deux villes?
+\item Dans quelle ville les précipitations sont les plus variables?
+\item Combien chacune de ces villes reçoit de précipitation en mètre annuellement?
+\item Représentez graphiquement les précipitations mensuelles pour les deux villes.
+\end{enumerate}
 
 \end{document}
