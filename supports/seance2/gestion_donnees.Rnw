@@ -1,0 +1,42 @@
+\documentclass[letterpaper]{article}
+
+\usepackage{graphicx}
+
+\usepackage{verbatim}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[frenchb]{babel}
+
+\usepackage{array}
+
+\usepackage[top=2.5cm,bottom=2.5cm,left=2cm,right=2cm]{geometry}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\lhead{}
+\chead{}
+\rhead{Premier pas dans R}
+\lfoot{Jean-Denis Giguère}
+\cfoot{\includegraphics[height=1cm,keepaspectratio=true]{by-sa}}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+
+\title{Gestion de données \\ 
+{\small Introduction à l'utilisation du logiciel statistique R}}
+
+\author{Jean-Denis Giguère}
+
+
+\begin{document}
+
+<<echo=FALSE,results=hide>>=
+#
+# Jean-Denis Giguère, 2012
+# CC-BY-SA
+#
+@
+
+\end{document}
