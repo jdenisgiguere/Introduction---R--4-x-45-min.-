@@ -39,4 +39,24 @@
 #
 @
 
+\maketitle
+
+\section{Introduction}
+
+\section{Les fichiers textes}
+
+\section{Ajouter des fonctionnalités}
+
+\subsection{Installer des packages}
+
+\subsection{Charger des packages}
+
+\section{Les Shapefile}
+
+\section{Les GeoTiff}
+
+\section{Conclusion}
+
+\section{Exercice}
+
 \end{document}
