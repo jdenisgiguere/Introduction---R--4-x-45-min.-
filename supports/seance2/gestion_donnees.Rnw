@@ -41,19 +41,83 @@
 
 \maketitle
 
+\thispagestyle{fancy}
+
 \section{Introduction}
 
 \section{Les fichiers textes}
 
+
+<<>>=
+erables <- read.csv("seance2_data/echantillon_erable.csv", dec=",")
+summary(erables)
+@
+
+<<>>=
+echelle.biomasse <- 0.1970
+exposant.biomasse <- 2.1933
+
+erables$bio <- echelle.biomasse * (erables$DHPCM ) ^ exposant.biomasse
+summary(erables)
+@
+
 \section{Ajouter des fonctionnalités}
 
-\subsection{Installer des packages}
+
+
+\subsection{Installer des packages}<
+
+<<eval=FALSE>>=
+install.packages("rgdal")
+@
 
 \subsection{Charger des packages}
 
+<<>>=
+library(rgdal)
+@
+
+Lors de la rédaction d'un script, on placera le chargement des packages
+au tout début du script.
+
 \section{Les Shapefile}
 
+<<>>=
+erables.sief <- readOGR('seance2_data/', layer='Erable_SIEF',
+                        input_field_name_encoding='latin1')
+@
+
+<<fig=TRUE, echo=TRUE>>=
+plot(erables.sief)
+@
+
+
 \section{Les GeoTiff}
+
+
+<<>>=
+l7.etm <- readGDAL('seance2_data/012028_0100_010525_l7_743_mtm7_clip.tif')
+@
+
+<<>>=
+summary(l7.etm)
+names(l7.etm) <- c("b7", "b4", "b3")
+@
+
+<<eval=FALSE>>=
+install.packages('raster')
+@
+
+<<>>=
+library(raster)
+l7.etm.raster <- stack(l7.etm)
+@
+
+<<fig=TRUE, ech=TRUE>>=
+plotRGB(l7.etm.raster)
+@
+
+
 
 \section{Conclusion}
 
