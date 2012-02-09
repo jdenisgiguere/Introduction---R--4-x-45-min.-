@@ -9,7 +9,7 @@
 
 \usepackage{array}
 
-\usepackage[top=2.5cm,bottom=2.5cm,left=2cm,right=2cm]{geometry}
+\usepackage[top=3cm,bottom=3cm,left=2.5cm,right=2.5cm]{geometry}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -45,33 +45,77 @@
 
 \section{Introduction}
 
+Cette semaine, on s'intérese à la manipulation des données dans {\tt R}.
+La possibilité de gérer efficacement les données ne constituent pas
+une grande victoire. Par contre, lorsque cet aspect n'est pas gérer 
+efficacement, il s'agit d'un obstacle majeur à la réalisation des analyses.
+Dans certains cas, c'est même une cause d'erreurs importantes.
+
 \section{Les fichiers textes}
 
+Dès que l'on travaille avec des jeux de données un peu plus significatif,
+l'importation et l'exportation de données deviennent nécessaire.
+
+Un cas fréquent consiste à obtenir des données dans un fichier texte.
+Dans ca cas, il faut connaître un certain nombre d'éléments comment
+le caractère délémitant les champs, le séparateur décimal et l'encodage
+des chaînes de caractères. Plusieurs fonctions permettent d'effectuer
+ce type d'opération. Nous utiiserons ici \verb+read.csv+ car
+le fichier en question contient des données séparées par des virgules.
 
 <<>>=
 erables <- read.csv("seance2_data/echantillon_erable.csv", dec=",")
 summary(erables)
 @
 
+\section{Les tableaux de données}
+
+Le fichier csv est facile à produire à partir d'un tableur Excel (tm).
+C'est généralement l'intermédiaire qui sera retenu pour traiter dans {\tt R}
+des données provenant de ces tableurs.
+
+\verb+erables+ est un tableau de données. C'est une structure très
+fréquemment utilisée pour stocker l'information sur un échantillon.
+L'opérateur \verb+$+ sert à extraire des données. Lorsqu'utilisé
+en combinaison avec l'opérateur d'affectation, il permet de créer
+une nouvelle variable. Un autre cas spécifique est l'affectation de
+la valeur spéciale \verb+NULL+. Ceci permet de suprimer une variable
+d'un tableau de données.
+
 <<>>=
+erables$BIOMASSE <- NULL
+summary(erables)
+
 echelle.biomasse <- 0.1970
 exposant.biomasse <- 2.1933
 
-erables$bio <- echelle.biomasse * (erables$DHPCM ) ^ exposant.biomasse
+erables$BIOMASSE <- echelle.biomasse * (erables$DHPCM ) ^ exposant.biomasse
 summary(erables)
 @
 
 \section{Ajouter des fonctionnalités}
 
+Rapidement, il devient utile d'ajouter des fonctionnalités à notre environnement
+{\tt R}. Ceci est possible facilement avec le système de packages.
 
+\subsection{Installer des packages}
 
-\subsection{Installer des packages}<
+L'installation de package peut se faire graphiquement dans {\tt rstudio} ou
+à directement dans la console.
+Nous installerons \verb+rgdal+. Ce package permet d'importer ou d'exporter
+des données géospatiales matricielles ou vectorielles.
 
 <<eval=FALSE>>=
 install.packages("rgdal")
 @
 
+L'installation de packages est occasionnelles. Lorsqu'on installe une nouvelle
+version de {\tt R} ou que l'on souhaite mettre à jour la version du package.
+
 \subsection{Charger des packages}
+
+Lorsqu'un package est installé, il faut le charger dans notre session active
+avec les ses fonctionnalités soient disponibles.
 
 <<>>=
 library(rgdal)
@@ -80,12 +124,27 @@ library(rgdal)
 Lors de la rédaction d'un script, on placera le chargement des packages
 au tout début du script.
 
-\section{Les Shapefile}
+\section{Les Shapefiles}
+
+
+Pour charger un Shapefile dans {\tt R}, on utilise la commande \verb+readOGR+.
+D'autres commandes sont possibles. 
 
 <<>>=
 erables.sief <- readOGR('seance2_data/', layer='Erable_SIEF',
                         input_field_name_encoding='latin1')
 @
+
+ \verb+readOGR+ et son équivalent matriciel \verb+readGDAL+ supportent
+ de nombreux formats de données géospatiaux.
+ 
+ <<>>=
+ ogrDrivers()
+ gdalDrivers()
+@
+
+On peut avoir une représentation simpliste de données géospatiales
+avec la commande \verb+plot+.
 
 <<fig=TRUE, echo=TRUE>>=
 plot(erables.sief)
@@ -94,32 +153,85 @@ plot(erables.sief)
 
 \section{Les GeoTiff}
 
+Le chargement de données matricielles est plutôt similaire.
 
 <<>>=
 l7.etm <- readGDAL('seance2_data/012028_0100_010525_l7_743_mtm7_clip.tif')
+summary(l7.etm)
 @
 
+
+Ici, on voit que le nom par défaut des bandes peut porter à confusion.
+La fonction \verb+names+ permet d'afficher le nom des composantes d'un
+objet. Encore une fois, si l'opérateur d'affection est utilisé, 
+on peut exploiter cette fonction pour changer le nom des bandes.
+
 <<>>=
-summary(l7.etm)
 names(l7.etm) <- c("b7", "b4", "b3")
 @
+
+Le calcul du NDVI se fait alors
+
+<<>>=
+l7.etm$ndvi <- (l7.etm$b4 - l7.etm$b3) /  (l7.etm$b4 + l7.etm$b3)
+@
+
+<<fig=TRUE, echo=TRUE>>=
+spplot(l7.etm, "ndvi")
+@
+
+
+\subsection{D'autres formes pour les mêmes donneés}
+
+Les données de l'image ETM dans sa forme initiale sont bien utiles.
+Il est toutefois possible que pour certaines opérations, il soit
+nécessaire de transormer les données vers un autre format.
+Pour illustrer simplement ce concept, supposons que l'on veuille
+créer un composé coloré avec les trois bandes de notre imagerie.
+Pour cela, il faut utilise la fonction \verb+plotRGB+ du package \verb+raster+.
+\verb+plotRGB+ prend en premier paramètre un objet de classe \verb+RasterBrick+
+ou \verb+RasterStack+. Vérifions si notre variable \verb+l7.etm+ correspond
+à une de ces deux classes:
+
+<<>>=
+class(l7.etm)
+@
+
+Comme ce n'est pas le cas, il faudra procéder à une transformation.
+
+Si ce n'est pas déjà fait, il faut installer le pacakage \verb+raster+.
 
 <<eval=FALSE>>=
 install.packages('raster')
 @
+
+On le charge avant d'utiliser la fonction \verb+stack+ qui effectue 
+la conversion.
 
 <<>>=
 library(raster)
 l7.etm.raster <- stack(l7.etm)
 @
 
+On peut ensuite appeler la fonction qui crée le composé.
+
 <<fig=TRUE, ech=TRUE>>=
 plotRGB(l7.etm.raster)
 @
 
 
-
 \section{Conclusion}
+
+Dans cette séance, nous avons étudiés quelques exemples de chargement
+de données ainsi que quelques transformations usuelles sur les données.
+Voici un résumé des idées principales:
+\begin{itemize}
+\item la tableau de données est la structure usuelle pour stocker des attributs;
+\item les données stockées dans des fichiers texte sont chargées par des fonctions
+telle \verb+read.csv+;
+\item le système de packages de {\tt R} permet d'étendre les fonctionnalités;
+\item \verb+rgdal+ permet d'importer et d'exporter des données spatiales.
+\end{itemize}
 
 \section{Exercice}
 
