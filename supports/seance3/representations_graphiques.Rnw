@@ -8,6 +8,7 @@
 \usepackage[frenchb]{babel}
 
 \usepackage{array}
+\usepackage{hyperref}
 
 \usepackage[top=3cm,bottom=3cm,left=2.5cm,right=2.5cm]{geometry}
 
@@ -78,11 +79,14 @@ ad.rmr@data$RMRID <- as.factor(ad.rmr@data$RMRIDU)
 L'inspection dynamique d'un jeu de données nous permet parfois
 d'identifier des relations nouvelles. Le logiciel {\tt ggobi}
 permet de modifier dynamiquement un jeu de données.
+On peut l'installer à partir du site 
+\url{http://www.ggobi.org/}.
 Il possède un interface pour l'utiliser dans {\tt R}.
 
 <<eval=FALSE>>=
 install.packages("rggobi")
 @
+
 
 Après avoir installer {\tt rggobi} et ses dépendances, il est nécessaire
 de redémarrer {\tt R} avant que les fonctionnalités soient disponibles.

@@ -131,7 +131,7 @@ Pour charger un Shapefile dans {\tt R}, on utilise la commande \verb+readOGR+.
 D'autres commandes sont possibles. 
 
 <<>>=
-erables.sief <- readOGR('seance2_data/', layer='Erable_SIEF',
+erables.sief <- readOGR('seance2_data', layer='Erable_SIEF',
                         input_field_name_encoding='latin1')
 @
 
