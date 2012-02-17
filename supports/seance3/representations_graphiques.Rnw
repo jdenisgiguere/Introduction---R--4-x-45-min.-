@@ -1,0 +1,212 @@
+\documentclass[letterpaper]{article}
+
+\usepackage{graphicx}
+
+\usepackage{verbatim}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[frenchb]{babel}
+
+\usepackage{array}
+
+\usepackage[top=3cm,bottom=3cm,left=2.5cm,right=2.5cm]{geometry}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\lhead{}
+\chead{}
+\rhead{Représentations graphiques dans {\tt R}}
+\lfoot{Jean-Denis Giguère}
+\cfoot{\includegraphics[height=1cm,keepaspectratio=true]{by-sa}}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+
+\title{Représentation graphique dans {\tt R} \\ 
+{\small Introduction à l'utilisation du logiciel statistique R}}
+
+\author{Jean-Denis Giguère}
+
+% Dimension par défaut des figures
+\setkeys{Gin}{width=0.5\textwidth}
+
+
+\begin{document}
+
+<<echo=FALSE,results=hide>>=
+#
+# Jean-Denis Giguère, 2012
+# CC-BY-SA
+#
+@
+
+\maketitle
+
+\thispagestyle{fancy}
+
+\section{Introduction}
+
+La production de représentations graphiques est souvent l'une de nos
+première préoccupation losrque l'on reçoit un nouveau jeu de données.
+C'est également un des derniers éléments que nous paufineronts lors
+de la publication de nos résultats. Il s'agit donc d'un élément
+qui nous accompagne tout au long de notre processus de traitement
+et d'analyse des données.
+
+\section{La défavorisation}
+
+Nous travaillerons aujourd'hui avec un jeu de données du recensement de 2001.
+Il contient l'ensemble des aires de diffusion du recensement pour
+les régions métropolitaines de recensement (RMR) du Québec.
+
+\section{Préparation du jeu de données}
+
+Les données sont déjà stockées dans un fichier de données {\tt R}.
+Comme il s'agit de données spatiales, nous utiliserons le package {\tt sp}.
+
+<<>>=
+library(sp)
+load('ad_rmr.Rdata')
+
+ad.rmr@data$RMRID <- as.factor(ad.rmr@data$RMRIDU)
+@
+
+\section{Explorer graphiquement un jeu de données}
+
+L'inspection dynamique d'un jeu de données nous permet parfois
+d'identifier des relations nouvelles. Le logiciel {\tt ggobi}
+permet de modifier dynamiquement un jeu de données.
+Il possède un interface pour l'utiliser dans {\tt R}.
+
+<<eval=FALSE>>=
+install.packages("rggobi")
+@
+
+Après avoir installer {\tt rggobi} et ses dépendances, il est nécessaire
+de redémarrer {\tt R} avant que les fonctionnalités soient disponibles.
+
+<<eval=FALSE>>=
+library(rggobi)
+ggobi(ad.rmr@data)
+@
+
+Il n'est pas possible de scripter les opérations réaliser dans {\tt rggobi}.
+
+
+\section{Graphique multivarié}
+
+Le package lattice offre des options très intéressantes pour
+visualiser des données multivariées dans {\tt R}.
+
+<<>>=
+library(lattice)
+@
+
+Il nous offre également la possibilité de rencontrer pour la première
+la syntaxe des formules dans {\tt R}.
+Dans l'exemple plus bas, voici comment interpréter la formule:
+
+\begin{verbatim}
+variable_dependante ~  variable_independante | variable_de_conditionnement
+\end{verbatim}
+
+Ainsi, on voudra créer des graphiques présenter le revenu en fonction
+de la proportion de la population ayant atteint une certaine scolarité
+pour les différentes RMR.
+
+<<fig=TRUE, echo=TRUE>>=
+xyplot(REVENU ~ SCOLAR | RMRID, data = ad.rmr@data)
+@
+
+Améliorons un peut le graphique en ajoutant un titre et en modifiant
+le nom des variables.
+
+<<fig=TRUE, echo=TRUE>>=
+xyplot(REVENU ~ SCOLAR | as.character(RMRID), data = ad.rmr@data,
+       xlab='Scolarité',
+       ylab='Revenu ($)',
+       main='Revenu en fonction de la scoliarité pour les RMR du Québec',
+       auto.key=TRUE)
+@
+
+\section{Paramétrer un graphique}
+
+Travaillons maintenant uniquement avec les données de la RMR de Sherbrooke.
+
+<<>>=
+ad.sbk <- ad.rmr[ad.rmr@data$RMRID==433,]
+@
+
+Représentons la revenu en fonction du nombre de personne ayant atteint
+un certain niveau de scolarité.
+
+<<fig=TRUE, echo=TRUE>>=
+plot(ad.sbk$SCOLAR, ad.sbk$REVENU)
+@
+
+Bonifions le graphique en changeant les unités des axes, leurs étiquettes,
+en changeant le symbole utilisé et en ajouter un titre.
+
+<<fig=TRUE, echo=TRUE>>=
+plot(ad.sbk$SCOLAR*100, ad.sbk$REVENU/1000, 
+     xlab="Pourcentage de la population ayant une scolarité X", 
+     ylab="Revenu moyen en K$", 
+     main="Relation entre la scolarité et le revenu pour la RMR de sherbrooke", 
+     pch=4)
+@
+
+\subsection{Un première régression linéaire}
+
+La fonction {\tt lm} permet de créer une régression linéaire (simple ou multiple)
+Un revoit ici la notation de formule.
+
+<<>>=
+revenu <- ad.sbk$REVENU / 1000
+scolar <- ad.sbk$SCOLAR * 100
+lm.revenu.scolar <- lm(revenu ~ scolar)
+summary(lm.revenu.scolar)
+@
+
+Il est possible d'ajouter la droite de régression à notre graphique.
+
+
+<<fig=TRUE, echo=TRUE>>=
+plot(ad.sbk$SCOLAR*100, ad.sbk$REVENU/1000, 
+     xlab="Pourcentage de la population ayant une scolarité X", 
+     ylab="Revenu moyen en K$", 
+     main="Relation entre la scolarité et le revenu pour la RMR de sherbrooke", 
+     pch=4)
+abline(lm.revenu.scolar)
+@
+
+\section{Créer une carte}
+
+On peut simplement créer un carte avec la fonction {\tt spplot}.
+
+<<fig=TRUE, echo=TRUE>>=
+spplot(ad.sbk, "REVENU")
+@
+
+Le message transmis peut être bonifier en choissant une meilleure symbologie.
+Le package {\tt RColorBrewer} est utile à cette fin.
+
+<<eval=FALSE>>=
+install.packages('RColorBrewer')
+
+<<>>=
+library(RColorBrewer)
+YlOrRd <- brewer.pal(7,'YlOrRd')
+@
+
+<<fig=TRUE, echo=TRUE>>=
+spplot(ad.sbk, "REVENU", col.regions=YlOrRd, 
+       at=quantile(ad.sbk$REVENU, probs=seq(0,1,1/7), na.rm=TRUE),
+       main='Répartition du revenu des ménages de la RMR de Sherbrooke')
+@
+
+Le paramètre {\tt at} nous permet d'indiquer les limites des classes.
+Ici, c'est la méthode des quantiles qui a été retenu.
+
+\end{document}

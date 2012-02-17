@@ -135,12 +135,12 @@ erables.sief <- readOGR('seance2_data/', layer='Erable_SIEF',
                         input_field_name_encoding='latin1')
 @
 
- \verb+readOGR+ et son équivalent matriciel \verb+readGDAL+ supportent
- de nombreux formats de données géospatiaux.
+\verb+readOGR+ et son équivalent matriciel \verb+readGDAL+ supportent
+de nombreux formats de données géospatiaux.
  
- <<>>=
- ogrDrivers()
- gdalDrivers()
+<<>>=
+ogrDrivers()
+gdalDrivers()
 @
 
 On peut avoir une représentation simpliste de données géospatiales
@@ -150,6 +150,20 @@ avec la commande \verb+plot+.
 plot(erables.sief)
 @
 
+\subsection{Les attributs des données vectorielles}
+
+La classe utilisée pour représenter les données vectorielles s'appelle
+\verb+SpatialPolygonsDataFrame+. Comme le nom l'indique, elle
+offre une combinaison de représentations géométriques et d'attributs.
+La fonction \verb+summary+ permet d'avoir une vue d'ensemble
+de la représentation proposée.
+
+<<>>=
+summary(erables.sief)
+@
+
+Il est possible de manipuler le tableau de données par des opérations
+similaires à ce que nous avons vu précédemment.
 
 \section{Les GeoTiff}
 
@@ -233,6 +247,10 @@ telle \verb+read.csv+;
 \item \verb+rgdal+ permet d'importer et d'exporter des données spatiales.
 \end{itemize}
 
-\section{Exercice}
+\section{Remerciements}
+
+Je tiens à remercier Geneviève Crevier pour sa contribution à cet atelier.
+Madame Crevier à participer activement à la préparation des données
+utilisées dans cette séance.
 
 \end{document}
